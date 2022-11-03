@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ArcRotateCamera, Engine, HemisphericLight, MeshBuilder, Scene, Vector3 } from '@babylonjs/core';
+import { ArcRotateCamera, Color4, Engine, HemisphericLight, MeshBuilder, Scene, Vector3 } from '@babylonjs/core';
 
 @Component({
   selector: 'app-shell',
@@ -28,8 +28,12 @@ export class ShellComponent implements OnInit {
   }
 
   private init(): void {
+    // Engine
     this.engine = new Engine(this.canvas?.nativeElement, true);
+    
+    // Scene
     this.scene = new Scene(this.engine);
+    this.scene.clearColor = new Color4(0.53, 0.8, 0.92, 1); // A nice sky blue
 
     // Camera
     this.camera = new ArcRotateCamera("MainCamera",  Math.PI / 2, Math.PI / 2, 30, Vector3.Zero(), this.scene);

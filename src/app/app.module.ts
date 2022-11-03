@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { ShellComponent } from './components/shell/shell.component';
 import { BabylonViewerComponent } from './components/babylon-viewer/babylon-viewer.component';
 import { InfoPanelComponent } from './components/info-panel/info-panel.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { InfoPanelComponent } from './components/info-panel/info-panel.component
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
