@@ -684,20 +684,20 @@ export class ShellComponent implements OnInit {
     const doorHeight: number = 0.8;
 
     // Outer walls
-    let wall1 = this.buildWall(6, undefined, true);
+    let wall1 = this.buildWall(6, true);
     wall1.translate(Vector3.Backward(), 2.5);
     wall1.translate(Vector3.Right(), 1.5);
 
-    let wall2 = this.buildWall(6, undefined, true);
+    let wall2 = this.buildWall(6, true);
     wall2.translate(Vector3.Forward(), 2.5);
     wall2.translate(Vector3.Right(), 1.5);
     wall2.rotate(Vector3.Up(), this.toRadians(180));
 
-    let wall3 = this.buildWall(5, undefined, true);
+    let wall3 = this.buildWall(5, true);
     wall3.translate(Vector3.Left(), 1.5);
     wall3.rotate(Vector3.Up(), this.toRadians(90));
 
-    let wall4 = this.buildWall(5, undefined, true);
+    let wall4 = this.buildWall(5, true);
     wall4.translate(Vector3.Right(), 4.5);
     wall4.rotate(Vector3.Up(), this.toRadians(-90));
 
@@ -718,7 +718,7 @@ export class ShellComponent implements OnInit {
       }
     ];
 
-    let wall5 = this.buildWall(5, this.getInnerWallMaterial(), false, doors5);
+    let wall5 = this.buildWall(5, false, doors5);
     wall5.translate(Vector3.Right(), 1.5);
     wall5.rotate(Vector3.Up(), this.toRadians(-90));
 
@@ -732,7 +732,7 @@ export class ShellComponent implements OnInit {
       }
     ];
 
-    let wall6 = this.buildWall(3, this.getInnerWallMaterial(), false, doors6);
+    let wall6 = this.buildWall(3, false, doors6);
     wall6.translate(Vector3.Backward(), 0.5);
     wall6.translate(Vector3.Right(), 3);
 
@@ -851,7 +851,7 @@ export class ShellComponent implements OnInit {
     floor.material = floorMaterial;
   }
 
-  private buildWall(length: number, outerMaterial?: PBRMaterial, isOuterWall?: boolean, holes?: MeshInfo[]): Mesh {
+  private buildWall(length: number, isOuterWall?: boolean, holes?: MeshInfo[]): Mesh {
     const height: number = 1.05;
 
     holes?.forEach((meshInfo: MeshInfo) => {
@@ -904,10 +904,10 @@ export class ShellComponent implements OnInit {
 
     outerWall.translate(Vector3.Backward(), 0.05);
     outerWall.translate(Vector3.Up(), height);
-    outerWall.material = this.getOuterWallMaterial();
+    outerWall.material = this.getInnerWallMaterial();
     outerWall.setParent(innerWall);
 
-    if (!outerMaterial) 
+    if (isOuterWall) 
       outerWall.material = this.getOuterWallMaterial();
 
     const topPlateShape: Vector3[] = [
