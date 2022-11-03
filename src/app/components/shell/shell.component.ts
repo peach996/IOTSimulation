@@ -101,7 +101,7 @@ export class ShellComponent implements OnInit {
     this.light.intensity = 0.5;
 
     // Helpers
-    const axes = new AxesViewer(this.scene, 1);
+    // const axes = new AxesViewer(this.scene, 1);
     this.scene.onPointerObservable.add((event) =>
       this.handlePointerEvent(event)
     );
