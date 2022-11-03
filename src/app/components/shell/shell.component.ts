@@ -754,20 +754,20 @@ export class ShellComponent implements OnInit {
     floor.rotate(Vector3.Left(), this.toRadians(-90));
 
     let ambientFloor = new Texture(
-      'assets/materials/carpet_blue/ambientOcclusion.jpg'
+      'assets/materials/floor/ambientOcclusion.jpg'
     );
     ambientFloor.uScale = this.carpetTextureScale;
     ambientFloor.vScale = this.carpetTextureScale;
     let baseColorFloor = new Texture(
-      'assets/materials/carpet_blue/baseColor.jpg'
+      'assets/materials/floor/baseColor.jpg'
     );
     baseColorFloor.uScale = this.carpetTextureScale;
     baseColorFloor.vScale = this.carpetTextureScale;
-    let normalFloor = new Texture('assets/materials/carpet_blue/normal.jpg');
+    let normalFloor = new Texture('assets/materials/floor/normal.jpg');
     normalFloor.uScale = this.carpetTextureScale;
     normalFloor.vScale = this.carpetTextureScale;
     let roughnessFloor = new Texture(
-      'assets/materials/carpet_blue/roughness.jpg'
+      'assets/materials/floor/roughness.jpg'
     );
     roughnessFloor.uScale = this.carpetTextureScale;
     roughnessFloor.vScale = this.carpetTextureScale;
@@ -791,27 +791,21 @@ export class ShellComponent implements OnInit {
     floor.translate(Vector3.Up(), 1);
     floor.translate(Vector3.Right(), 3);
 
-    let ambientFloor = new Texture(
-      'assets/materials/wood_floor/ambientOcclusion.jpg'
-    );
-    ambientFloor.uScale = this.kitchenTextureScale;
-    ambientFloor.vScale = this.kitchenTextureScale;
     let baseColorFloor = new Texture(
-      'assets/materials/wood_floor/baseColor.jpg'
+      'assets/materials/floor/baseColor.jpg'
     );
     baseColorFloor.uScale = this.kitchenTextureScale;
     baseColorFloor.vScale = this.kitchenTextureScale;
-    let normalFloor = new Texture('assets/materials/wood_floor/normal.jpg');
+    let normalFloor = new Texture('assets/materials/floor/normal.jpg');
     normalFloor.uScale = this.kitchenTextureScale;
     normalFloor.vScale = this.kitchenTextureScale;
     let roughnessFloor = new Texture(
-      'assets/materials/wood_floor/roughness.jpg'
+      'assets/materials/floor/roughness.jpg'
     );
     roughnessFloor.uScale = this.kitchenTextureScale;
     roughnessFloor.vScale = this.kitchenTextureScale;
 
     let floorMaterial = new PBRMaterial('kitchenFloorMaterial', this.scene);
-    floorMaterial.ambientTexture = ambientFloor;
     floorMaterial.albedoTexture = baseColorFloor;
     floorMaterial.bumpTexture = normalFloor;
     floorMaterial.metallicTexture = roughnessFloor;
@@ -830,15 +824,15 @@ export class ShellComponent implements OnInit {
     floor.translate(Vector3.Right(), 3);
 
     let baseColorFloor = new Texture(
-      'assets/materials/carpet_white/baseColor.jpg'
+      'assets/materials/floor/baseColor.jpg'
     );
     baseColorFloor.uScale = this.carpetTextureScale;
     baseColorFloor.vScale = this.carpetTextureScale;
-    let normalFloor = new Texture('assets/materials/carpet_white/normal.jpg');
+    let normalFloor = new Texture('assets/materials/floor/normal.jpg');
     normalFloor.uScale = this.carpetTextureScale;
     normalFloor.vScale = this.carpetTextureScale;
     let roughnessFloor = new Texture(
-      'assets/materials/carpet_white/roughness.jpg'
+      'assets/materials/floor/roughness.jpg'
     );
     roughnessFloor.uScale = this.carpetTextureScale;
     roughnessFloor.vScale = this.carpetTextureScale;
