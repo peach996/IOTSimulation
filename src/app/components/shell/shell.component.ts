@@ -257,17 +257,40 @@ export class ShellComponent implements OnInit {
     return topPlateMaterial;
   }
 
-  addAppliances(): void {
+  private addAppliances(): void {
     // TV
+    let tv = this.createTv();
+    tv.translate(Vector3.Up(), 0.6);
+    tv.translate(Vector3.Right(), 1.48);
+    tv.rotate(Vector3.Up(), this.toRadians(90));
+
+    // Sockets
+    let plugSocket1 = this.createPlugSocket();
+    plugSocket1.translate(Vector3.Up(), 0.2);
+    plugSocket1.translate(Vector3.Right(), 1.495);
+    plugSocket1.rotate(Vector3.Up(), this.toRadians(90));
+  }
+
+  private createTv(): Mesh {
     let tv = MeshBuilder.CreateBox("TV", { height: 0.5, width: 1, depth: 0.03 }, this.scene);
     let tvMaterial = new PBRMaterial("tvMaterial", this.scene);
     tvMaterial.albedoColor = new Color3(0, 0, 0);
     tvMaterial.roughness = 0.0;
     tvMaterial.metallic = 1.0;
     tv.material = tvMaterial;
-    tv.translate(Vector3.Up(), 0.6);
-    tv.translate(Vector3.Right(), 1.48);
-    tv.rotate(Vector3.Up(), this.toRadians(90));
+
+    return tv;
+  }
+
+  private createPlugSocket(): Mesh {
+    let plugSocket = MeshBuilder.CreateBox("plugSocket", { height: 0.05, width: 0.1, depth: 0.001 }, this.scene);
+    let plugSocketMaterial = new PBRMaterial("plugSocketMaterial", this.scene);
+    plugSocketMaterial.albedoColor = new Color3(1.0, 1.0, 1.0);
+    plugSocketMaterial.roughness = 0.25;
+    plugSocketMaterial.metallic = 0.9;
+    plugSocket.material = plugSocketMaterial;
+
+    return plugSocket;
   }
 
   private toRadians(degrees: number): number {
