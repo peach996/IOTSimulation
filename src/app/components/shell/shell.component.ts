@@ -15,8 +15,14 @@ export class ShellComponent implements OnInit {
   private scene!: Scene;
   private camera!: ArcRotateCamera;
   private light!: HemisphericLight;
+
+  private innerWallMaterial?: PBRMaterial;
+
   private readonly kitchenTextureScale: number = 4;
-  private readonly capertTextureScale: number = 10;
+  private readonly carpetTextureScale: number = 10;
+  private readonly innerWallTextureScale: number = 10;
+  private readonly brickTextureScaleU: number = 10;
+  private readonly brickTextureScaleV: number = 2;
 
   constructor() { 
   }
@@ -39,6 +45,8 @@ export class ShellComponent implements OnInit {
     this.camera = new ArcRotateCamera("MainCamera",  Math.PI / 2, Math.PI / 2, 10, Vector3.Zero(), this.scene);
     this.camera.attachControl(this.canvas, true);
     this.camera.target = new Vector3(1.5, 0, 0);
+    this.camera.lowerRadiusLimit = 2;
+    this.camera.upperRadiusLimit = 20;
 
     // Lighting
     this.light = new HemisphericLight("hemisphericLight", new Vector3(0, 1, 0), this.scene);
@@ -48,6 +56,33 @@ export class ShellComponent implements OnInit {
   }
 
   private buildHouse(): void {
+    // Outer walls
+    let wall1 = this.buildWall(6);
+    wall1.translate(Vector3.Backward(), 2.5);
+    wall1.translate(Vector3.Right(), 1.5);
+
+    let wall2 = this.buildWall(6);
+    wall2.translate(Vector3.Forward(), 2.5);
+    wall2.translate(Vector3.Right(), 1.5);
+    wall2.rotate(Vector3.Up(), this.toRadians(180));
+
+    let wall3 = this.buildWall(5);
+    wall3.translate(Vector3.Left(), 1.5);
+    wall3.rotate(Vector3.Up(), this.toRadians(90));
+
+    let wall4 = this.buildWall(5);
+    wall4.translate(Vector3.Right(), 4.5);
+    wall4.rotate(Vector3.Up(), this.toRadians(-90));
+
+    let wall5 = this.buildWall(5, this.getInnerWallMaterial());
+    wall5.translate(Vector3.Right(), 1.5);
+    wall5.rotate(Vector3.Up(), this.toRadians(-90));
+
+    let wall6 = this.buildWall(3, this.getInnerWallMaterial());
+    wall6.translate(Vector3.Backward(), 0.5);
+    wall6.translate(Vector3.Right(), 3);
+
+    // Rooms
     this.buildLivingRoom();
     this.buildKitchen();
     this.buildBackRoom();
@@ -58,17 +93,17 @@ export class ShellComponent implements OnInit {
     floor.rotate(Vector3.Left(), this.toRadians(-90));
 
     let ambientFloor = new Texture("assets/materials/carpet_blue/ambientOcclusion.jpg");
-    ambientFloor.uScale = this.capertTextureScale;
-    ambientFloor.vScale = this.capertTextureScale;
+    ambientFloor.uScale = this.carpetTextureScale;
+    ambientFloor.vScale = this.carpetTextureScale;
     let baseColorFloor = new Texture("assets/materials/carpet_blue/baseColor.jpg");
-    baseColorFloor.uScale = this.capertTextureScale;
-    baseColorFloor.vScale = this.capertTextureScale;
+    baseColorFloor.uScale = this.carpetTextureScale;
+    baseColorFloor.vScale = this.carpetTextureScale;
     let normalFloor = new Texture("assets/materials/carpet_blue/normal.jpg");
-    normalFloor.uScale = this.capertTextureScale;
-    normalFloor.vScale = this.capertTextureScale;
+    normalFloor.uScale = this.carpetTextureScale;
+    normalFloor.vScale = this.carpetTextureScale;
     let roughnessFloor = new Texture("assets/materials/carpet_blue/roughness.jpg");
-    roughnessFloor.uScale = this.capertTextureScale;
-    roughnessFloor.vScale = this.capertTextureScale;
+    roughnessFloor.uScale = this.carpetTextureScale;
+    roughnessFloor.vScale = this.carpetTextureScale;
 
     let floorMaterial = new PBRMaterial("livingRoomFloorMaterial", this.scene);
     floorMaterial.ambientTexture = ambientFloor;
@@ -114,14 +149,14 @@ export class ShellComponent implements OnInit {
     floor.translate(Vector3.Right(), 3);
 
     let baseColorFloor = new Texture("assets/materials/carpet_white/baseColor.jpg");
-    baseColorFloor.uScale = this.capertTextureScale;
-    baseColorFloor.vScale = this.capertTextureScale;
+    baseColorFloor.uScale = this.carpetTextureScale;
+    baseColorFloor.vScale = this.carpetTextureScale;
     let normalFloor = new Texture("assets/materials/carpet_white/normal.jpg");
-    normalFloor.uScale = this.capertTextureScale;
-    normalFloor.vScale = this.capertTextureScale;
+    normalFloor.uScale = this.carpetTextureScale;
+    normalFloor.vScale = this.carpetTextureScale;
     let roughnessFloor = new Texture("assets/materials/carpet_white/roughness.jpg");
-    roughnessFloor.uScale = this.capertTextureScale;
-    roughnessFloor.vScale = this.capertTextureScale;
+    roughnessFloor.uScale = this.carpetTextureScale;
+    roughnessFloor.vScale = this.carpetTextureScale;
 
     let floorMaterial = new PBRMaterial("backRoomFloorMaterial", this.scene);
     floorMaterial.albedoTexture = baseColorFloor;
@@ -129,6 +164,96 @@ export class ShellComponent implements OnInit {
     floorMaterial.metallicTexture = roughnessFloor;
 
     floor.material = floorMaterial;
+  }
+
+  private buildWall(length: number, outerMaterial?: PBRMaterial): Mesh {
+    const height: number = 1.05;
+
+    let innerWall = MeshBuilder.CreatePlane("innerWall", { height: height, width: length, sideOrientation: Mesh.DOUBLESIDE }, this.scene);
+    innerWall.translate(Vector3.Up(), height / 2)
+
+    innerWall.material = this.getInnerWallMaterial();
+
+    let outerWall = MeshBuilder.CreatePlane("outerWall", { height: height, width: length, sideOrientation: Mesh.DOUBLESIDE }, this.scene);
+    outerWall.translate(Vector3.Backward(), 0.05)
+    outerWall.translate(Vector3.Up(), height / 2)
+    outerWall.setParent(innerWall);    
+
+    if (!outerMaterial)
+      outerWall.material = this.getOuterWallMaterial();
+
+    let topPlate = MeshBuilder.CreatePlane("topPlate", { height: 0.05, width: length, sideOrientation: Mesh.DOUBLESIDE }, this.scene);
+    topPlate.translate(Vector3.Up(), height)
+    topPlate.translate(Vector3.Backward(), 0.025)
+    topPlate.rotate(Vector3.Left(), this.toRadians(-90));
+    topPlate.setParent(innerWall);
+    topPlate.material = this.getTopPlateMaterial();
+
+    return innerWall;
+  }
+
+  private getInnerWallMaterial(): PBRMaterial {
+    if (this.innerWallMaterial)
+      return this.innerWallMaterial;
+
+    let baseColorInnerWall = new Texture("assets/materials/inner_wall/baseColor.jpg");
+    baseColorInnerWall.uScale = this.innerWallTextureScale;
+    baseColorInnerWall.vScale = this.innerWallTextureScale;
+    let normalInnerWall = new Texture("assets/materials/inner_wall/normal.jpg");
+    normalInnerWall.uScale = this.innerWallTextureScale;
+    normalInnerWall.vScale = this.innerWallTextureScale;
+    let roughnessInnerWall = new Texture("assets/materials/inner_wall/roughness.jpg");
+    roughnessInnerWall.uScale = this.innerWallTextureScale;
+    roughnessInnerWall.vScale = this.innerWallTextureScale;
+
+    this.innerWallMaterial = new PBRMaterial("innerWallMaterial", this.scene);
+    this.innerWallMaterial.albedoTexture = baseColorInnerWall;
+    this.innerWallMaterial.bumpTexture = normalInnerWall;
+    this.innerWallMaterial.metallicTexture = roughnessInnerWall;
+
+    return this.innerWallMaterial;
+  }
+
+  private getOuterWallMaterial(): PBRMaterial {
+    let ambientBricks = new Texture("assets/materials/bricks/ambientOcclusion.jpg");
+    ambientBricks.uScale = this.brickTextureScaleU;
+    ambientBricks.vScale = this.brickTextureScaleV;
+    let baseColorBricks = new Texture("assets/materials/bricks/baseColor.jpg");
+    baseColorBricks.uScale = this.brickTextureScaleU;
+    baseColorBricks.vScale = this.brickTextureScaleV;
+    let normalBricks = new Texture("assets/materials/bricks/normal.jpg");
+    normalBricks.uScale = this.brickTextureScaleU;
+    normalBricks.vScale = this.brickTextureScaleV;
+    let roughnessBricks = new Texture("assets/materials/bricks/roughness.jpg");
+    roughnessBricks.uScale = this.brickTextureScaleU;
+    roughnessBricks.vScale = this.brickTextureScaleV;
+
+    let brickMaterial = new PBRMaterial("bricksMaterial", this.scene);
+    brickMaterial.ambientTexture = ambientBricks;
+    brickMaterial.albedoTexture = baseColorBricks;
+    brickMaterial.bumpTexture = normalBricks;
+    brickMaterial.metallicTexture = roughnessBricks;
+
+    return brickMaterial;
+  }
+
+  private getTopPlateMaterial(): PBRMaterial {
+    let baseColorTopPlate = new Texture("assets/materials/top_plate/baseColor.jpg");
+    baseColorTopPlate.uScale = this.brickTextureScaleU;
+    baseColorTopPlate.vScale = this.brickTextureScaleV;
+    let normalTopPlate = new Texture("assets/materials/top_plate/normal.jpg");
+    normalTopPlate.uScale = this.brickTextureScaleU;
+    normalTopPlate.vScale = this.brickTextureScaleV;
+    let roughnessTopPlate = new Texture("assets/materials/top_plate/roughness.jpg");
+    roughnessTopPlate.uScale = this.brickTextureScaleU;
+    roughnessTopPlate.vScale = this.brickTextureScaleV;
+
+    let topPlateMaterial = new PBRMaterial("topPlateMaterial", this.scene);
+    topPlateMaterial.albedoTexture = baseColorTopPlate;
+    topPlateMaterial.bumpTexture = normalTopPlate;
+    topPlateMaterial.metallicTexture = roughnessTopPlate;
+
+    return topPlateMaterial;
   }
 
   private toRadians(degrees: number): number {
