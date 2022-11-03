@@ -4,6 +4,7 @@ import {
   AxesViewer,
   Color3,
   Color4,
+  CSG,
   Engine,
   HemisphericLight,
   Mesh,
@@ -680,6 +681,8 @@ export class ShellComponent implements OnInit {
   }
 
   private buildHouse(): void {
+    const doorHeight: number = 0.8;
+
     // Outer walls
     let wall1 = this.buildWall(6, undefined, true);
     wall1.translate(Vector3.Backward(), 2.5);
@@ -698,11 +701,38 @@ export class ShellComponent implements OnInit {
     wall4.translate(Vector3.Right(), 4.5);
     wall4.rotate(Vector3.Up(), this.toRadians(-90));
 
-    let wall5 = this.buildWall(5, this.getInnerWallMaterial());
+    let door51 = MeshBuilder.CreateBox("door51", { height: doorHeight, width: 0.5, depth: 1}, this.scene);
+    door51.translate(Vector3.Right(), 1.5);
+
+    let door52 = MeshBuilder.CreateBox("door52", { height: doorHeight, width: 0.5, depth: 1}, this.scene);
+    door52.translate(Vector3.Left(), 1.5);
+
+    let doors5: MeshInfo[] = [
+      {
+        mesh: door51,
+        height: doorHeight
+      },
+      {
+        mesh: door52,
+        height: doorHeight
+      }
+    ];
+
+    let wall5 = this.buildWall(5, this.getInnerWallMaterial(), false, doors5);
     wall5.translate(Vector3.Right(), 1.5);
     wall5.rotate(Vector3.Up(), this.toRadians(-90));
 
-    let wall6 = this.buildWall(3, this.getInnerWallMaterial());
+    let door61 = MeshBuilder.CreateBox("door61", { height: doorHeight, width: 0.5, depth: 1}, this.scene);
+    door61.translate(Vector3.Left(), 0.95);
+
+    let doors6: MeshInfo[] = [
+      {
+        mesh: door61,
+        height: doorHeight
+      }
+    ];
+
+    let wall6 = this.buildWall(3, this.getInnerWallMaterial(), false, doors6);
     wall6.translate(Vector3.Backward(), 0.5);
     wall6.translate(Vector3.Right(), 3);
 
@@ -821,8 +851,12 @@ export class ShellComponent implements OnInit {
     floor.material = floorMaterial;
   }
 
-  private buildWall(length: number, outerMaterial?: PBRMaterial, isOuterWall?: boolean): Mesh {
+  private buildWall(length: number, outerMaterial?: PBRMaterial, isOuterWall?: boolean, holes?: MeshInfo[]): Mesh {
     const height: number = 1.05;
+
+    holes?.forEach((meshInfo: MeshInfo) => {
+      meshInfo.mesh.translate(Vector3.Down(), height - (meshInfo.height / 2));
+    });
 
     let modifier = 0;
 
@@ -832,24 +866,49 @@ export class ShellComponent implements OnInit {
     const innerWallShape: Vector3[] = [
       new Vector3(-(length / 2), 0, 0),
       new Vector3(length / 2 , 0, 0),
+      new Vector3(length / 2 , 0, 0.001),
+      new Vector3(-(length / 2), 0, 0.001)
     ];
 
     let innerWall = MeshBuilder.CreatePolygon("innerWall", {shape: innerWallShape, depth: height}, this.scene, earcut);
-    innerWall.translate(Vector3.Up(), height);
+    
+    let innerWallCsg = CSG.FromMesh(innerWall);
+    holes?.forEach((meshInfo: MeshInfo) => {
+      let meshCsg = CSG.FromMesh(meshInfo.mesh);
+      innerWallCsg = innerWallCsg.subtract(meshCsg);
+    });
+    innerWall.dispose();
+    innerWall = innerWallCsg.toMesh("innerWall", null, this.scene);
 
+    innerWall.translate(Vector3.Up(), height);
     innerWall.material = this.getInnerWallMaterial();
 
     const outerWallShape: Vector3[] = [
       new Vector3(-(length / 2) - modifier, 0, 0),
       new Vector3(length / 2 + modifier , 0, 0),
+      new Vector3(length / 2 + modifier , 0, 0.001),
+      new Vector3(-(length / 2) - modifier, 0, 0.001)
     ];
 
     let outerWall = MeshBuilder.CreatePolygon("outerWall", {shape: outerWallShape, depth: height}, this.scene, earcut);
+    
+    let outerWallCsg = CSG.FromMesh(outerWall);
+    holes?.forEach((meshInfo: MeshInfo) => {
+      let meshCsg = CSG.FromMesh(meshInfo.mesh);
+      outerWallCsg = outerWallCsg.subtract(meshCsg);
+      meshInfo.mesh.dispose();
+    });
+
+    outerWall.dispose();
+    outerWall = outerWallCsg.toMesh("outerWall", null, this.scene);
+
     outerWall.translate(Vector3.Backward(), 0.05);
     outerWall.translate(Vector3.Up(), height);
+    outerWall.material = this.getOuterWallMaterial();
     outerWall.setParent(innerWall);
 
-    if (!outerMaterial) outerWall.material = this.getOuterWallMaterial();
+    if (!outerMaterial) 
+      outerWall.material = this.getOuterWallMaterial();
 
     const topPlateShape: Vector3[] = [
       new Vector3(-(length / 2) - modifier, 0, 0),
@@ -1377,4 +1436,9 @@ export class ShellComponent implements OnInit {
       this.scene.render();
     });
   }
+}
+
+export interface MeshInfo {
+  mesh: Mesh;
+  height: number;
 }
