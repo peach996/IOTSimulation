@@ -347,8 +347,8 @@ export class ShellComponent implements OnInit {
     let ovenHandle = MeshBuilder.CreateBox("ovenHandle", { height: 0.01, width: 0.3, depth: 0.03 }, this.scene);
     let ovenHandleMaterial = new PBRMaterial("ovenHandleMaterial", this.scene);
     ovenHandleMaterial.albedoColor = new Color3(1.0, 1.0, 1.0);
-    ovenHandleMaterial.roughness = 0.0;
-    ovenHandleMaterial.metallic = 1.0;
+    ovenHandleMaterial.roughness = 0.3;
+    ovenHandleMaterial.metallic = 0.8;
     ovenHandle.material = ovenHandleMaterial;
     ovenHandle.translate(Vector3.Up(), 0.16);
     ovenHandle.translate(Vector3.Right(), 0.5);
