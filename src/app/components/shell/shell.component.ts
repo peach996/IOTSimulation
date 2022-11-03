@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ArcRotateCamera, AxesViewer, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, Scene, StandardMaterial, Texture, Vector3 } from '@babylonjs/core';
+import { ArcRotateCamera, AxesViewer, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, PBRMaterial, Scene, StandardMaterial, Texture, Vector3 } from '@babylonjs/core';
 
 @Component({
   selector: 'app-shell',
@@ -15,6 +15,8 @@ export class ShellComponent implements OnInit {
   private scene!: Scene;
   private camera!: ArcRotateCamera;
   private light!: HemisphericLight;
+  private readonly kitchenTextureScale: number = 4;
+  private readonly capertTextureScale: number = 10;
 
   constructor() { 
   }
@@ -54,8 +56,26 @@ export class ShellComponent implements OnInit {
   private buildLivingRoom(): void {
     let floor = MeshBuilder.CreatePlane("livingRoomFloor", { height: 5, width: 3, sideOrientation: Mesh.DOUBLESIDE }, this.scene);
     floor.rotate(Vector3.Left(), this.toRadians(-90));
-    let floorMaterial = new StandardMaterial("livingRoomFloorMaterial", this.scene);
-    floorMaterial.diffuseColor = new Color3(0.8, 0, 0);
+
+    let ambientFloor = new Texture("assets/materials/carpet_blue/ambientOcclusion.jpg");
+    ambientFloor.uScale = this.capertTextureScale;
+    ambientFloor.vScale = this.capertTextureScale;
+    let baseColorFloor = new Texture("assets/materials/carpet_blue/baseColor.jpg");
+    baseColorFloor.uScale = this.capertTextureScale;
+    baseColorFloor.vScale = this.capertTextureScale;
+    let normalFloor = new Texture("assets/materials/carpet_blue/normal.jpg");
+    normalFloor.uScale = this.capertTextureScale;
+    normalFloor.vScale = this.capertTextureScale;
+    let roughnessFloor = new Texture("assets/materials/carpet_blue/roughness.jpg");
+    roughnessFloor.uScale = this.capertTextureScale;
+    roughnessFloor.vScale = this.capertTextureScale;
+
+    let floorMaterial = new PBRMaterial("livingRoomFloorMaterial", this.scene);
+    floorMaterial.ambientTexture = ambientFloor;
+    floorMaterial.albedoTexture = baseColorFloor;
+    floorMaterial.bumpTexture = normalFloor;
+    floorMaterial.metallicTexture = roughnessFloor;
+
     floor.material = floorMaterial;
   }
 
@@ -64,8 +84,26 @@ export class ShellComponent implements OnInit {
     floor.rotate(Vector3.Left(), this.toRadians(-90));
     floor.translate(Vector3.Up(), 1);
     floor.translate(Vector3.Right(), 3);
-    let floorMaterial = new StandardMaterial("kitchenFloorMaterial", this.scene);
-    floorMaterial.diffuseColor = new Color3(0, 0.8, 0);
+
+    let ambientFloor = new Texture("assets/materials/wood_floor/ambientOcclusion.jpg");
+    ambientFloor.uScale = this.kitchenTextureScale;
+    ambientFloor.vScale = this.kitchenTextureScale;
+    let baseColorFloor = new Texture("assets/materials/wood_floor/baseColor.jpg");
+    baseColorFloor.uScale = this.kitchenTextureScale;
+    baseColorFloor.vScale = this.kitchenTextureScale;
+    let normalFloor = new Texture("assets/materials/wood_floor/normal.jpg");
+    normalFloor.uScale = this.kitchenTextureScale;
+    normalFloor.vScale = this.kitchenTextureScale;
+    let roughnessFloor = new Texture("assets/materials/wood_floor/roughness.jpg");
+    roughnessFloor.uScale = this.kitchenTextureScale;
+    roughnessFloor.vScale = this.kitchenTextureScale;
+
+    let floorMaterial = new PBRMaterial("kitchenFloorMaterial", this.scene);
+    floorMaterial.ambientTexture = ambientFloor;
+    floorMaterial.albedoTexture = baseColorFloor;
+    floorMaterial.bumpTexture = normalFloor;
+    floorMaterial.metallicTexture = roughnessFloor;
+    
     floor.material = floorMaterial;
   }
 
@@ -74,8 +112,22 @@ export class ShellComponent implements OnInit {
     floor.rotate(Vector3.Left(), this.toRadians(-90));
     floor.translate(Vector3.Down(), 1.5);
     floor.translate(Vector3.Right(), 3);
-    let floorMaterial = new StandardMaterial("backRoomFloorMaterial", this.scene);
-    floorMaterial.diffuseColor = new Color3(0, 0, 0.8);
+
+    let baseColorFloor = new Texture("assets/materials/carpet_white/baseColor.jpg");
+    baseColorFloor.uScale = this.capertTextureScale;
+    baseColorFloor.vScale = this.capertTextureScale;
+    let normalFloor = new Texture("assets/materials/carpet_white/normal.jpg");
+    normalFloor.uScale = this.capertTextureScale;
+    normalFloor.vScale = this.capertTextureScale;
+    let roughnessFloor = new Texture("assets/materials/carpet_white/roughness.jpg");
+    roughnessFloor.uScale = this.capertTextureScale;
+    roughnessFloor.vScale = this.capertTextureScale;
+
+    let floorMaterial = new PBRMaterial("backRoomFloorMaterial", this.scene);
+    floorMaterial.albedoTexture = baseColorFloor;
+    floorMaterial.bumpTexture = normalFloor;
+    floorMaterial.metallicTexture = roughnessFloor;
+
     floor.material = floorMaterial;
   }
 
