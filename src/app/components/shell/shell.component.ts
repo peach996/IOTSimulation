@@ -269,6 +269,18 @@ export class ShellComponent implements OnInit {
     plugSocket1.translate(Vector3.Up(), 0.2);
     plugSocket1.translate(Vector3.Right(), 1.495);
     plugSocket1.rotate(Vector3.Up(), this.toRadians(90));
+
+    let plugSocket2 = this.createPlugSocket();
+    plugSocket2.translate(Vector3.Up(), 0.2);
+    plugSocket2.translate(Vector3.Left(), 1.495);
+    plugSocket2.translate(Vector3.Backward(), 1);
+    plugSocket2.rotate(Vector3.Up(), this.toRadians(-90));
+
+    // Kitchen
+    let kitchenCabinets = this.createKitchenCabinets();
+    kitchenCabinets.translate(Vector3.Up(), 0.175);
+    kitchenCabinets.translate(Vector3.Backward(), 0.25);
+    kitchenCabinets.translate(Vector3.Right(), 3.5);
   }
 
   private createTv(): Mesh {
@@ -291,6 +303,87 @@ export class ShellComponent implements OnInit {
     plugSocket.material = plugSocketMaterial;
 
     return plugSocket;
+  }
+
+  private createKitchenCabinets(): Mesh {
+    let kitchenCabinet = MeshBuilder.CreateBox("kitchenCabinet", { height: 0.35, width: 2, depth: 0.5 }, this.scene);
+    let kitchenCabinetMaterial = new PBRMaterial("kitchenCabinetMaterial", this.scene);
+    kitchenCabinetMaterial.albedoColor = new Color3(0.3, 0.3, 0.3);
+    kitchenCabinetMaterial.roughness = 0.25;
+    kitchenCabinetMaterial.metallic = 0.9;
+    kitchenCabinet.material = kitchenCabinetMaterial;
+
+    let kitchenCabinet2 = MeshBuilder.CreateBox("kitchenCabinet", { height: 0.35, width: 2.5, depth: 0.5 }, this.scene);
+    kitchenCabinet2.material = kitchenCabinetMaterial;
+    kitchenCabinet2.translate(Vector3.Right(), 0.75);
+    kitchenCabinet2.translate(Vector3.Forward(), 1.5);
+    kitchenCabinet2.rotate(Vector3.Up(), this.toRadians(-90));
+
+    let kitchenTop = MeshBuilder.CreateBox("kitchenTop", { height: 0.02, width: 2, depth: 0.5 }, this.scene);
+    kitchenTop.translate(Vector3.Up(), 0.185);
+    let kitchenTopMaterial = new PBRMaterial("kitchenTopMaterial", this.scene);
+    kitchenTopMaterial.albedoColor = new Color3(0.9, 0.9, 0.9);
+    kitchenTopMaterial.roughness = 0.25;
+    kitchenTopMaterial.metallic = 0.9;
+    kitchenTop.material = kitchenTopMaterial;
+
+    let kitchenTop2 = MeshBuilder.CreateBox("kitchenTop2", { height: 0.02, width: 2.5, depth: 0.5 }, this.scene);
+    kitchenTop2.material = kitchenTopMaterial;
+    kitchenTop2.translate(Vector3.Up(), 0.185);
+    kitchenTop2.translate(Vector3.Right(), 0.75);
+    kitchenTop2.translate(Vector3.Forward(), 1.5);
+    kitchenTop2.rotate(Vector3.Up(), this.toRadians(-90));
+
+    let oven = MeshBuilder.CreateBox("oven", { height: 0.3, width: 0.3, depth: 0.01 }, this.scene);
+    let ovenMaterial = new PBRMaterial("ovenMaterial", this.scene);
+    ovenMaterial.albedoColor = new Color3(0, 0, 0);
+    ovenMaterial.roughness = 0.0;
+    ovenMaterial.metallic = 1.0;
+    oven.material = ovenMaterial;
+    oven.translate(Vector3.Right(), 0.5);
+    oven.translate(Vector3.Forward(), 1.5);
+    oven.rotate(Vector3.Up(), this.toRadians(-90));
+
+    let ovenHandle = MeshBuilder.CreateBox("ovenHandle", { height: 0.01, width: 0.3, depth: 0.03 }, this.scene);
+    let ovenHandleMaterial = new PBRMaterial("ovenHandleMaterial", this.scene);
+    ovenHandleMaterial.albedoColor = new Color3(1.0, 1.0, 1.0);
+    ovenHandleMaterial.roughness = 0.0;
+    ovenHandleMaterial.metallic = 1.0;
+    ovenHandle.material = ovenHandleMaterial;
+    ovenHandle.translate(Vector3.Up(), 0.16);
+    ovenHandle.translate(Vector3.Right(), 0.5);
+    ovenHandle.translate(Vector3.Forward(), 1.5);
+    ovenHandle.rotate(Vector3.Up(), this.toRadians(-90));
+
+    let hob = MeshBuilder.CreateBox("hob", { height: 0.01, width: 0.35, depth: 0.5 }, this.scene);
+    let hobMaterial = new PBRMaterial("hobMaterial", this.scene);
+    hobMaterial.albedoColor = new Color3(0.0, 0.0, 0.0);
+    hobMaterial.roughness = 0.0;
+    hobMaterial.metallic = 1.0;
+    hob.material = hobMaterial;
+    hob.translate(Vector3.Up(), 0.2);
+    hob.translate(Vector3.Right(), 0.75);
+    hob.translate(Vector3.Forward(), 1.5);
+    hob.rotate(Vector3.Up(), this.toRadians(-90));
+
+    let sink = MeshBuilder.CreateBox("sink", { height: 0.01, width: 0.35, depth: 0.5 }, this.scene);
+    let sinkMaterial = new PBRMaterial("sinkMaterial", this.scene);
+    sinkMaterial.albedoColor = new Color3(0.8, 0.8, 0.8);
+    sinkMaterial.roughness = 0.2;
+    sinkMaterial.metallic = 0.8;
+    sink.material = sinkMaterial;
+    sink.translate(Vector3.Up(), 0.2);
+    sink.rotate(Vector3.Up(), this.toRadians(-90));
+
+    kitchenCabinet2.setParent(kitchenCabinet);
+    kitchenTop.setParent(kitchenCabinet);
+    kitchenTop2.setParent(kitchenCabinet);
+    oven.setParent(kitchenCabinet);
+    ovenHandle.setParent(kitchenCabinet);
+    hob.setParent(kitchenCabinet); 
+    sink.setParent(kitchenCabinet); 
+
+    return kitchenCabinet;
   }
 
   private toRadians(degrees: number): number {
