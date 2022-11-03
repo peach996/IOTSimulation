@@ -7,9 +7,12 @@
   </div>
   <div class="panel">
     <h1>Info panel</h1>
+    <div class="level">Points : {{ points }}</div>
+    <br />
+    <br />
     <app-attribute-panel></app-attribute-panel>
-    <div><button mat-raised-button color="primary">Visualise Data</button></div>
-    <div><button mat-raised-button color="primary">Share Data</button></div>
+    <div><button mat-raised-button color="primary" (click)="visualiseData($event)">Visualise Data</button></div>
+    <div><button mat-raised-button color="primary" (click)="shareData($event)">Share Data</button></div>
     <div><button mat-raised-button color="primary">Solar Upgrade: Cost $1500 ROI - $100 per year</button></div>
     <div><button mat-raised-button color="primary">Hydro Upgrade: Cost $1000 ROI - $30 per year</button></div>
     <div><button mat-raised-button color="primary">Kinetic Upgrade: Cost $500 ROI - $50 per year</button></div>
