@@ -1,4 +1,11 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {
   ArcRotateCamera,
   AxesViewer,
@@ -57,6 +64,8 @@ export class ShellComponent implements OnInit {
   options: any;
   lines: any;
   clickedPoints: any[] = [];
+  showWallData = false;
+  initialColor: Color3 = new Color3(0, 0, 1);
 
   i = 0;
   private roofPlanes: Mesh[] = [];
@@ -119,7 +128,7 @@ export class ShellComponent implements OnInit {
   }
 
   runSim() {
-    setInterval(() => this.simulateMovement(), 100);
+    setInterval(() => this.simulateMovement(), 300);
   }
 
   levelChanged(level: Level): void {
@@ -147,7 +156,11 @@ export class ShellComponent implements OnInit {
         simulationPoints[this.i].z
       )
     );
-    const line = MeshBuilder.CreateLines('lines', { points: this.pathPoints }, this.scene);
+    const line = MeshBuilder.CreateLines(
+      'lines',
+      { points: this.pathPoints },
+      this.scene
+    );
     line.color = Color3.Blue();
     this.i++;
   }
@@ -177,7 +190,7 @@ export class ShellComponent implements OnInit {
     const doorHeight: number = 0.8;
 
     // Outer walls
-    let wall1 = this.buildWall(6, true);
+    let wall1 = this.buildWall(6, true, [], true);
     wall1.translate(Vector3.Backward(), 2.5);
     wall1.translate(Vector3.Right(), 1.5);
 
@@ -194,35 +207,47 @@ export class ShellComponent implements OnInit {
     wall4.translate(Vector3.Right(), 4.5);
     wall4.rotate(Vector3.Up(), this.toRadians(-90));
 
-    let door51 = MeshBuilder.CreateBox("door51", { height: doorHeight, width: 0.5, depth: 1}, this.scene);
+    let door51 = MeshBuilder.CreateBox(
+      'door51',
+      { height: doorHeight, width: 0.5, depth: 1 },
+      this.scene
+    );
     door51.translate(Vector3.Right(), 1.5);
 
-    let door52 = MeshBuilder.CreateBox("door52", { height: doorHeight, width: 0.5, depth: 1}, this.scene);
+    let door52 = MeshBuilder.CreateBox(
+      'door52',
+      { height: doorHeight, width: 0.5, depth: 1 },
+      this.scene
+    );
     door52.translate(Vector3.Left(), 1.5);
 
     let doors5: MeshInfo[] = [
       {
         mesh: door51,
-        height: doorHeight
+        height: doorHeight,
       },
       {
         mesh: door52,
-        height: doorHeight
-      }
+        height: doorHeight,
+      },
     ];
 
     let wall5 = this.buildWall(5, false, doors5);
     wall5.translate(Vector3.Right(), 1.5);
     wall5.rotate(Vector3.Up(), this.toRadians(-90));
 
-    let door61 = MeshBuilder.CreateBox("door61", { height: doorHeight, width: 0.5, depth: 1}, this.scene);
+    let door61 = MeshBuilder.CreateBox(
+      'door61',
+      { height: doorHeight, width: 0.5, depth: 1 },
+      this.scene
+    );
     door61.translate(Vector3.Left(), 0.95);
 
     let doors6: MeshInfo[] = [
       {
         mesh: door61,
-        height: doorHeight
-      }
+        height: doorHeight,
+      },
     ];
 
     let wall6 = this.buildWall(3, false, doors6);
@@ -238,16 +263,32 @@ export class ShellComponent implements OnInit {
     this.roofPlanes = this.createRoofPlanes();
 
     // Lighting
-    let light1 = new PointLight("pointlight1", new Vector3(0, 1, 0), this.scene);
+    let light1 = new PointLight(
+      'pointlight1',
+      new Vector3(0, 1, 0),
+      this.scene
+    );
     light1.intensity = 2;
 
-    let light2 = new PointLight("pointlight2", new Vector3(3, 1, 1.25), this.scene);
+    let light2 = new PointLight(
+      'pointlight2',
+      new Vector3(3, 1, 1.25),
+      this.scene
+    );
     light2.intensity = 2;
 
-    let light3 = new PointLight("pointlight3", new Vector3(3, 1, -1.5), this.scene);
+    let light3 = new PointLight(
+      'pointlight3',
+      new Vector3(3, 1, -1.5),
+      this.scene
+    );
     light3.intensity = 2;
-    
-    let directionalLight = new DirectionalLight("directionLight", new Vector3(-0.25, -0.25, -0.25), this.scene);
+
+    let directionalLight = new DirectionalLight(
+      'directionLight',
+      new Vector3(-0.25, -0.25, -0.25),
+      this.scene
+    );
   }
 
   private buildLivingRoom(): void {
@@ -263,17 +304,13 @@ export class ShellComponent implements OnInit {
     );
     ambientFloor.uScale = this.carpetTextureScale;
     ambientFloor.vScale = this.carpetTextureScale;
-    let baseColorFloor = new Texture(
-      'assets/materials/floor/baseColor.jpg'
-    );
+    let baseColorFloor = new Texture('assets/materials/floor/baseColor.jpg');
     baseColorFloor.uScale = this.carpetTextureScale;
     baseColorFloor.vScale = this.carpetTextureScale;
     let normalFloor = new Texture('assets/materials/floor/normal.jpg');
     normalFloor.uScale = this.carpetTextureScale;
     normalFloor.vScale = this.carpetTextureScale;
-    let roughnessFloor = new Texture(
-      'assets/materials/floor/roughness.jpg'
-    );
+    let roughnessFloor = new Texture('assets/materials/floor/roughness.jpg');
     roughnessFloor.uScale = this.carpetTextureScale;
     roughnessFloor.vScale = this.carpetTextureScale;
 
@@ -296,17 +333,13 @@ export class ShellComponent implements OnInit {
     floor.translate(Vector3.Up(), 1);
     floor.translate(Vector3.Right(), 3);
 
-    let baseColorFloor = new Texture(
-      'assets/materials/floor/baseColor.jpg'
-    );
+    let baseColorFloor = new Texture('assets/materials/floor/baseColor.jpg');
     baseColorFloor.uScale = this.kitchenTextureScale;
     baseColorFloor.vScale = this.kitchenTextureScale;
     let normalFloor = new Texture('assets/materials/floor/normal.jpg');
     normalFloor.uScale = this.kitchenTextureScale;
     normalFloor.vScale = this.kitchenTextureScale;
-    let roughnessFloor = new Texture(
-      'assets/materials/floor/roughness.jpg'
-    );
+    let roughnessFloor = new Texture('assets/materials/floor/roughness.jpg');
     roughnessFloor.uScale = this.kitchenTextureScale;
     roughnessFloor.vScale = this.kitchenTextureScale;
 
@@ -328,17 +361,13 @@ export class ShellComponent implements OnInit {
     floor.translate(Vector3.Down(), 1.5);
     floor.translate(Vector3.Right(), 3);
 
-    let baseColorFloor = new Texture(
-      'assets/materials/floor/baseColor.jpg'
-    );
+    let baseColorFloor = new Texture('assets/materials/floor/baseColor.jpg');
     baseColorFloor.uScale = this.carpetTextureScale;
     baseColorFloor.vScale = this.carpetTextureScale;
     let normalFloor = new Texture('assets/materials/floor/normal.jpg');
     normalFloor.uScale = this.carpetTextureScale;
     normalFloor.vScale = this.carpetTextureScale;
-    let roughnessFloor = new Texture(
-      'assets/materials/floor/roughness.jpg'
-    );
+    let roughnessFloor = new Texture('assets/materials/floor/roughness.jpg');
     roughnessFloor.uScale = this.carpetTextureScale;
     roughnessFloor.vScale = this.carpetTextureScale;
 
@@ -350,47 +379,61 @@ export class ShellComponent implements OnInit {
     floor.material = floorMaterial;
   }
 
-  private buildWall(length: number, isOuterWall?: boolean, holes?: MeshInfo[]): Mesh {
+  private buildWall(
+    length: number,
+    isOuterWall?: boolean,
+    holes?: MeshInfo[],
+    hasIssue = false
+  ): Mesh {
     const height: number = 1.05;
 
     holes?.forEach((meshInfo: MeshInfo) => {
-      meshInfo.mesh.translate(Vector3.Down(), height - (meshInfo.height / 2));
+      meshInfo.mesh.translate(Vector3.Down(), height - meshInfo.height / 2);
     });
 
     let modifier = 0;
 
-    if (isOuterWall)
-      modifier = 0.05;
+    if (isOuterWall) modifier = 0.05;
 
     const innerWallShape: Vector3[] = [
       new Vector3(-(length / 2), 0, 0),
-      new Vector3(length / 2 , 0, 0),
-      new Vector3(length / 2 , 0, 0.001),
-      new Vector3(-(length / 2), 0, 0.001)
+      new Vector3(length / 2, 0, 0),
+      new Vector3(length / 2, 0, 0.001),
+      new Vector3(-(length / 2), 0, 0.001),
     ];
 
-    let innerWall = MeshBuilder.CreatePolygon("innerWall", {shape: innerWallShape, depth: height}, this.scene, earcut);
-    
+    let innerWall = MeshBuilder.CreatePolygon(
+      'innerWall',
+      { shape: innerWallShape, depth: height },
+      this.scene,
+      earcut
+    );
+
     let innerWallCsg = CSG.FromMesh(innerWall);
     holes?.forEach((meshInfo: MeshInfo) => {
       let meshCsg = CSG.FromMesh(meshInfo.mesh);
       innerWallCsg = innerWallCsg.subtract(meshCsg);
     });
     innerWall.dispose();
-    innerWall = innerWallCsg.toMesh("innerWall", null, this.scene);
+    innerWall = innerWallCsg.toMesh('innerWall', null, this.scene);
 
     innerWall.translate(Vector3.Up(), height);
     innerWall.material = this.getInnerWallMaterial();
 
     const outerWallShape: Vector3[] = [
       new Vector3(-(length / 2) - modifier, 0, 0),
-      new Vector3(length / 2 + modifier , 0, 0),
-      new Vector3(length / 2 + modifier , 0, 0.001),
-      new Vector3(-(length / 2) - modifier, 0, 0.001)
+      new Vector3(length / 2 + modifier, 0, 0),
+      new Vector3(length / 2 + modifier, 0, 0.001),
+      new Vector3(-(length / 2) - modifier, 0, 0.001),
     ];
 
-    let outerWall = MeshBuilder.CreatePolygon("outerWall", {shape: outerWallShape, depth: height}, this.scene, earcut);
-    
+    let outerWall = MeshBuilder.CreatePolygon(
+      'outerWall',
+      { shape: outerWallShape, depth: height },
+      this.scene,
+      earcut
+    );
+
     let outerWallCsg = CSG.FromMesh(outerWall);
     holes?.forEach((meshInfo: MeshInfo) => {
       let meshCsg = CSG.FromMesh(meshInfo.mesh);
@@ -399,28 +442,50 @@ export class ShellComponent implements OnInit {
     });
 
     outerWall.dispose();
-    outerWall = outerWallCsg.toMesh("outerWall", null, this.scene);
+    outerWall = outerWallCsg.toMesh('outerWall', null, this.scene);
 
     outerWall.translate(Vector3.Backward(), 0.05);
     outerWall.translate(Vector3.Up(), height);
     outerWall.material = this.getInnerWallMaterial();
     outerWall.setParent(innerWall);
 
-    if (isOuterWall) 
-      outerWall.material = this.getOuterWallMaterial();
+    if (isOuterWall) outerWall.material = this.getOuterWallMaterial();
 
     const topPlateShape: Vector3[] = [
       new Vector3(-(length / 2) - modifier, 0, 0),
-      new Vector3(length / 2 + modifier , 0, 0),
-      new Vector3(length / 2 , 0, 0.05),
+      new Vector3(length / 2 + modifier, 0, 0),
+      new Vector3(length / 2, 0, 0.05),
       new Vector3(-(length / 2), 0, 0.05),
     ];
-    
-    let topPlate = MeshBuilder.CreatePolygon("outerWall", {shape: topPlateShape, depth: 0.01}, this.scene, earcut);
+
+    let topPlate = MeshBuilder.CreatePolygon(
+      'outerWall',
+      { shape: topPlateShape, depth: 0.01 },
+      this.scene,
+      earcut
+    );
     topPlate.translate(Vector3.Up(), height);
     topPlate.translate(Vector3.Backward(), 0.05);
     topPlate.setParent(innerWall);
     topPlate.material = this.getTopPlateMaterial();
+
+    if (this.showWallData && hasIssue) {
+      this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
+
+      var rect1 = new Rectangle();
+      rect1.width = 0.1;
+      rect1.height = '40px';
+      rect1.cornerRadius = 20;
+      rect1.color = 'black';
+      rect1.thickness = 4;
+      rect1.background = 'red';
+      this.advancedTexture.addControl(rect1);
+      rect1.linkWithMesh(outerWall);
+
+      var label = new TextBlock();
+      label.text = '10% Damp Detected';
+      rect1.addControl(label);
+    }
 
     return innerWall;
   }
@@ -565,40 +630,77 @@ export class ShellComponent implements OnInit {
     tvMaterial.metallic = 1.0;
     tv.material = tvMaterial;
 
-    this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
+    if (!this.showWallData) {
+      this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
 
-    var rect1 = new Rectangle();
-    rect1.width = 0.05;
-    rect1.height = '40px';
-    rect1.cornerRadius = 20;
-    rect1.color = 'Orange';
-    rect1.background = 'green';
-    this.advancedTexture.addControl(rect1);
-    rect1.linkWithMesh(tv);
-    rect1.linkOffsetY = -150;
+      var rect1 = new Rectangle();
+      rect1.width = 0.05;
+      rect1.height = '40px';
+      rect1.cornerRadius = 20;
+      rect1.color = 'Orange';
+      rect1.background = 'green';
+      this.advancedTexture.addControl(rect1);
+      rect1.linkWithMesh(tv);
+      rect1.linkOffsetY = -150;
 
-    var label = new TextBlock();
-    label.text = 'TV';
-    rect1.addControl(label);
+      var label = new TextBlock();
+      label.text = 'TV';
+      rect1.addControl(label);
 
-    var target = new Ellipse();
-    target.width = '20px';
-    target.height = '20px';
-    target.color = 'Orange';
-    target.background = 'green';
-    this.advancedTexture.addControl(target);
-    target.linkWithMesh(tv);
+      var target = new Ellipse();
+      target.width = '20px';
+      target.height = '20px';
+      target.color = 'Orange';
+      target.background = 'green';
+      this.advancedTexture.addControl(target);
+      target.linkWithMesh(tv);
 
-    var line = new Line();
-    line.lineWidth = 2;
-    line.color = 'Orange';
-    line.y2 = 20;
-    line.linkOffsetY = -10;
-    this.advancedTexture.addControl(line);
-    line.linkWithMesh(tv);
-    line.connectedControl = rect1;
+      var line = new Line();
+      line.lineWidth = 2;
+      line.color = 'Orange';
+      line.y2 = 20;
+      line.linkOffsetY = -10;
+      this.advancedTexture.addControl(line);
+      line.linkWithMesh(tv);
+      line.connectedControl = rect1;
+
+      setTimeout(() => {
+        setInterval(() => this.simulateUsage(target), 1000);
+      }, 10000);
+    }
 
     return tv;
+  }
+
+  simulateUsage(rect: Ellipse) {
+    if (!rect) return;
+
+    if (
+      this.initialColor.b === 1 &&
+      this.initialColor.g < 1 &&
+      this.initialColor.r < 0.999
+    ) {
+      this.initialColor.g += 0.1;
+    }
+
+    if (this.initialColor.g > 0.999 && this.initialColor.b - 0.1 >= 0) {
+      this.initialColor.b -= 0.1;
+    }
+
+    if (
+      this.initialColor.g > 0.999 &&
+      this.initialColor.b < 0.0001 &&
+      this.initialColor.r < 0.999
+    ) {
+      this.initialColor.r += 0.1;
+    }
+
+    if (this.initialColor.r > 0.999 && this.initialColor.g - 0.1 > 0) {
+      this.initialColor.g -= 0.1;
+    }
+
+    console.log(this.initialColor.toString());
+    rect.background = this.initialColor.toHexString();
   }
 
   private createPlugSocket(): Mesh {
@@ -612,6 +714,45 @@ export class ShellComponent implements OnInit {
     plugSocketMaterial.roughness = 0.25;
     plugSocketMaterial.metallic = 0.9;
     plugSocket.material = plugSocketMaterial;
+
+    if (!this.showWallData) {
+      this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
+
+      var rect1 = new Rectangle();
+      rect1.width = 0.05;
+      rect1.height = '40px';
+      rect1.cornerRadius = 20;
+      rect1.color = 'Orange';
+      rect1.background = 'green';
+      this.advancedTexture.addControl(rect1);
+      rect1.linkWithMesh(plugSocket);
+      rect1.linkOffsetY = -120;
+
+      var label = new TextBlock();
+      label.text = 'SOCKET';
+      rect1.addControl(label);
+
+      var target = new Ellipse();
+      target.width = '20px';
+      target.height = '20px';
+      target.color = 'Orange';
+      target.background = 'green';
+      this.advancedTexture.addControl(target);
+      target.linkWithMesh(plugSocket);
+
+      var line = new Line();
+      line.lineWidth = 2;
+      line.color = 'Orange';
+      line.y2 = 20;
+      line.linkOffsetY = -10;
+      this.advancedTexture.addControl(line);
+      line.linkWithMesh(plugSocket);
+      line.connectedControl = rect1;
+
+      setTimeout(() => {
+        setInterval(() => this.simulateUsage(target), 1000);
+      }, 10000);
+    }
 
     return plugSocket;
   }
@@ -729,6 +870,41 @@ export class ShellComponent implements OnInit {
     hob.setParent(kitchenCabinet);
     sink.setParent(kitchenCabinet);
 
+    if (!this.showWallData) {
+      this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
+
+      var rect1 = new Rectangle();
+      rect1.width = 0.05;
+      rect1.height = '40px';
+      rect1.cornerRadius = 20;
+      rect1.color = 'Orange';
+      rect1.background = 'green';
+      this.advancedTexture.addControl(rect1);
+      rect1.linkWithMesh(oven);
+      rect1.linkOffsetY = -150;
+
+      var label = new TextBlock();
+      label.text = 'OVEN';
+      rect1.addControl(label);
+
+      var target = new Ellipse();
+      target.width = '20px';
+      target.height = '20px';
+      target.color = 'Orange';
+      target.background = 'green';
+      this.advancedTexture.addControl(target);
+      target.linkWithMesh(oven);
+
+      var line = new Line();
+      line.lineWidth = 2;
+      line.color = 'Orange';
+      line.y2 = 20;
+      line.linkOffsetY = -10;
+      this.advancedTexture.addControl(line);
+      line.linkWithMesh(oven);
+      line.connectedControl = rect1;
+    }
+
     return kitchenCabinet;
   }
 
@@ -767,6 +943,41 @@ export class ShellComponent implements OnInit {
 
     pole.setParent(base);
     lampShade.setParent(base);
+
+    if (!this.showWallData) {
+      this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
+
+      var rect1 = new Rectangle();
+      rect1.width = 0.05;
+      rect1.height = '40px';
+      rect1.cornerRadius = 20;
+      rect1.color = 'Orange';
+      rect1.background = 'green';
+      this.advancedTexture.addControl(rect1);
+      rect1.linkWithMesh(lampShade);
+      rect1.linkOffsetY = -180;
+
+      var label = new TextBlock();
+      label.text = 'LIGHT';
+      rect1.addControl(label);
+
+      var target = new Ellipse();
+      target.width = '20px';
+      target.height = '20px';
+      target.color = 'Orange';
+      target.background = 'green';
+      this.advancedTexture.addControl(target);
+      target.linkWithMesh(lampShade);
+
+      var line = new Line();
+      line.lineWidth = 2;
+      line.color = 'Orange';
+      line.y2 = 20;
+      line.linkOffsetY = -10;
+      this.advancedTexture.addControl(line);
+      line.linkWithMesh(lampShade);
+      line.connectedControl = rect1;
+    }
 
     return base;
   }
@@ -834,17 +1045,13 @@ export class ShellComponent implements OnInit {
       new Vector3(-1.6, 0, 2.8),
     ];
 
-    let baseColorRoof = new Texture(
-      'assets/materials/roofing/baseColor.jpg'
-    );
+    let baseColorRoof = new Texture('assets/materials/roofing/baseColor.jpg');
     baseColorRoof.uScale = this.roofTextureScale;
     baseColorRoof.vScale = this.roofTextureScale;
     let normalRoof = new Texture('assets/materials/roofing/normal.jpg');
     normalRoof.uScale = this.roofTextureScale;
     normalRoof.vScale = this.roofTextureScale;
-    let roughnessRoof = new Texture(
-      'assets/materials/roofing/roughness.jpg'
-    );
+    let roughnessRoof = new Texture('assets/materials/roofing/roughness.jpg');
     roughnessRoof.uScale = this.roofTextureScale;
     roughnessRoof.vScale = this.roofTextureScale;
 
@@ -853,13 +1060,18 @@ export class ShellComponent implements OnInit {
     roofMaterial.bumpTexture = normalRoof;
     roofMaterial.metallicTexture = roughnessRoof;
 
-    let roofPlane = MeshBuilder.ExtrudePolygon("RoofPlane", { shape: shape, depth: 0.01, updatable: true }, this.scene, earcut);
+    let roofPlane = MeshBuilder.ExtrudePolygon(
+      'RoofPlane',
+      { shape: shape, depth: 0.01, updatable: true },
+      this.scene,
+      earcut
+    );
     roofPlane.material = roofMaterial;
     let roofPlane2 = roofPlane.clone();
 
     roofPlane.translate(Vector3.Up(), 2);
     roofPlane.rotate(Vector3.Right(), this.toRadians(20));
-    
+
     roofPlane2.translate(Vector3.Right(), 3);
     roofPlane2.translate(Vector3.Up(), 2);
     roofPlane2.rotate(Vector3.Up(), this.toRadians(180));
@@ -890,7 +1102,9 @@ export class ShellComponent implements OnInit {
     );
     baseColorSolarPanel.uScale = this.roofTextureScale;
     baseColorSolarPanel.vScale = this.roofTextureScale;
-    let normalSolarPanel = new Texture('assets/materials/solar_panels/normal.jpg');
+    let normalSolarPanel = new Texture(
+      'assets/materials/solar_panels/normal.jpg'
+    );
     normalSolarPanel.uScale = this.roofTextureScale;
     normalSolarPanel.vScale = this.roofTextureScale;
     let roughnessSolarPanel = new Texture(
@@ -905,7 +1119,12 @@ export class ShellComponent implements OnInit {
     solarPanelMaterial.bumpTexture = normalSolarPanel;
     solarPanelMaterial.metallicTexture = roughnessSolarPanel;
 
-    let solarPanel = MeshBuilder.ExtrudePolygon("Solar panel", { shape: shape, depth: 0.05, updatable: true }, this.scene, earcut);
+    let solarPanel = MeshBuilder.ExtrudePolygon(
+      'Solar panel',
+      { shape: shape, depth: 0.05, updatable: true },
+      this.scene,
+      earcut
+    );
     solarPanel.material = solarPanelMaterial;
     let solarPanel2 = solarPanel.clone();
 
@@ -913,7 +1132,7 @@ export class ShellComponent implements OnInit {
     solarPanel.translate(Vector3.Right(), 0.5);
     solarPanel.translate(Vector3.Up(), 1.85);
     solarPanel.rotate(Vector3.Right(), this.toRadians(20));
-    
+
     solarPanel2.translate(Vector3.Backward(), 0.5);
     solarPanel2.translate(Vector3.Left(), 0.5);
     solarPanel2.translate(Vector3.Right(), 3);
