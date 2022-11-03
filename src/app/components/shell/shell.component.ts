@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ArcRotateCamera, AxesViewer, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, PBRMaterial, Scene, StandardMaterial, Texture, Vector3 } from '@babylonjs/core';
+import { ArcRotateCamera, AxesViewer, Color3, Color4, Engine, HemisphericLight, Mesh, MeshBuilder, PBRMaterial, Scene, SceneLoader, StandardMaterial, Texture, Vector3 } from '@babylonjs/core';
 
 @Component({
   selector: 'app-shell',
@@ -30,6 +30,7 @@ export class ShellComponent implements OnInit {
   ngOnInit(): void {
     this.init();
     this.buildHouse();
+    this.addAppliances();
     this.render();    
   }
 
@@ -254,6 +255,19 @@ export class ShellComponent implements OnInit {
     topPlateMaterial.metallicTexture = roughnessTopPlate;
 
     return topPlateMaterial;
+  }
+
+  addAppliances(): void {
+    // TV
+    let tv = MeshBuilder.CreateBox("TV", { height: 0.5, width: 1, depth: 0.03 }, this.scene);
+    let tvMaterial = new PBRMaterial("tvMaterial", this.scene);
+    tvMaterial.albedoColor = new Color3(0, 0, 0);
+    tvMaterial.roughness = 0.0;
+    tvMaterial.metallic = 1.0;
+    tv.material = tvMaterial;
+    tv.translate(Vector3.Up(), 0.6);
+    tv.translate(Vector3.Right(), 1.48);
+    tv.rotate(Vector3.Up(), this.toRadians(90));
   }
 
   private toRadians(degrees: number): number {
