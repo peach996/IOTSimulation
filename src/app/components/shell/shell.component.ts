@@ -16,6 +16,13 @@ import {
   Texture,
   Vector3,
 } from '@babylonjs/core';
+import {
+  AdvancedDynamicTexture,
+  Ellipse,
+  Line,
+  Rectangle,
+  TextBlock,
+} from '@babylonjs/gui';
 
 @Component({
   selector: 'app-shell',
@@ -25,6 +32,9 @@ import {
 export class ShellComponent implements OnInit {
   @ViewChild('viewerCanvas', { static: true })
   canvas!: ElementRef<HTMLCanvasElement>;
+
+  advancedTexture: AdvancedDynamicTexture | undefined;
+  rect1: Rectangle | undefined;
 
   private engine!: Engine;
   private scene!: Scene;
@@ -972,6 +982,39 @@ export class ShellComponent implements OnInit {
     tvMaterial.metallic = 1.0;
     tv.material = tvMaterial;
 
+    this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('UI');
+
+    var rect1 = new Rectangle();
+    rect1.width = 0.05;
+    rect1.height = '40px';
+    rect1.cornerRadius = 20;
+    rect1.color = 'Orange';
+    rect1.background = 'green';
+    this.advancedTexture.addControl(rect1);
+    rect1.linkWithMesh(tv);
+    rect1.linkOffsetY = -150;
+
+    var label = new TextBlock();
+    label.text = 'TV';
+    rect1.addControl(label);
+
+    var target = new Ellipse();
+    target.width = '20px';
+    target.height = '20px';
+    target.color = 'Orange';
+    target.background = 'green';
+    this.advancedTexture.addControl(target);
+    target.linkWithMesh(tv);
+
+    var line = new Line();
+    line.lineWidth = 2;
+    line.color = 'Orange';
+    line.y2 = 20;
+    line.linkOffsetY = -10;
+    this.advancedTexture.addControl(line);
+    line.linkWithMesh(tv);
+    line.connectedControl = rect1;
+
     return tv;
   }
 
@@ -1107,21 +1150,33 @@ export class ShellComponent implements OnInit {
   }
 
   private createLamp(): Mesh {
-    let metalMaterial = new PBRMaterial("metalMaterial", this.scene);
+    let metalMaterial = new PBRMaterial('metalMaterial', this.scene);
     metalMaterial.albedoColor = new Color3(0.8, 0.8, 0.8);
     metalMaterial.roughness = 0.2;
     metalMaterial.metallic = 0.8;
 
-    let base = MeshBuilder.CreateCylinder("base", { diameterBottom: 0.2, diameterTop: 0.02, height: 0.05}, this.scene);
+    let base = MeshBuilder.CreateCylinder(
+      'base',
+      { diameterBottom: 0.2, diameterTop: 0.02, height: 0.05 },
+      this.scene
+    );
     base.material = metalMaterial;
 
-    let pole = MeshBuilder.CreateCylinder("pole", { diameterBottom: 0.02, diameterTop: 0.02, height: 0.5}, this.scene);
+    let pole = MeshBuilder.CreateCylinder(
+      'pole',
+      { diameterBottom: 0.02, diameterTop: 0.02, height: 0.5 },
+      this.scene
+    );
     pole.translate(Vector3.Up(), 0.25);
     pole.material = metalMaterial;
 
-    let lampShade = MeshBuilder.CreateCylinder("lampShade", { diameterBottom: 0.2, diameterTop: 0.1, height: 0.1}, this.scene);
+    let lampShade = MeshBuilder.CreateCylinder(
+      'lampShade',
+      { diameterBottom: 0.2, diameterTop: 0.1, height: 0.1 },
+      this.scene
+    );
     lampShade.translate(Vector3.Up(), 0.5);
-    let lampShadeMaterial = new PBRMaterial("metalMaterial", this.scene);
+    let lampShadeMaterial = new PBRMaterial('metalMaterial', this.scene);
     lampShadeMaterial.albedoColor = new Color3(0.8, 0.8, 0.8);
     lampShadeMaterial.roughness = 1.0;
     lampShadeMaterial.metallic = 0.0;
@@ -1134,27 +1189,47 @@ export class ShellComponent implements OnInit {
   }
 
   private createKettle(): Mesh {
-    let metalMaterial = new PBRMaterial("metalMaterial", this.scene);
+    let metalMaterial = new PBRMaterial('metalMaterial', this.scene);
     metalMaterial.albedoColor = new Color3(0.0, 0.0, 0.0);
     metalMaterial.roughness = 0.2;
     metalMaterial.metallic = 0.8;
 
-    let base = MeshBuilder.CreateCylinder("base", { diameterBottom: 0.1, diameterTop: 0.1, height: 0.01}, this.scene);
+    let base = MeshBuilder.CreateCylinder(
+      'base',
+      { diameterBottom: 0.1, diameterTop: 0.1, height: 0.01 },
+      this.scene
+    );
     base.material = metalMaterial;
 
-    let kettleBottom = MeshBuilder.CreateCylinder("kettleBottom", { diameterBottom: 0.1, diameterTop: 0.1, height: 0.1}, this.scene);
+    let kettleBottom = MeshBuilder.CreateCylinder(
+      'kettleBottom',
+      { diameterBottom: 0.1, diameterTop: 0.1, height: 0.1 },
+      this.scene
+    );
     kettleBottom.translate(Vector3.Up(), 0.06);
     kettleBottom.material = metalMaterial;
 
-    let kettleTop1 = MeshBuilder.CreateCylinder("kettleTop1", { diameterBottom: 0.1, diameterTop: 0.08, height: 0.02}, this.scene);
+    let kettleTop1 = MeshBuilder.CreateCylinder(
+      'kettleTop1',
+      { diameterBottom: 0.1, diameterTop: 0.08, height: 0.02 },
+      this.scene
+    );
     kettleTop1.translate(Vector3.Up(), 0.12);
     kettleTop1.material = metalMaterial;
 
-    let kettleTop2 = MeshBuilder.CreateCylinder("kettleTop2", { diameterBottom: 0.08, diameterTop: 0.04, height: 0.02}, this.scene);
+    let kettleTop2 = MeshBuilder.CreateCylinder(
+      'kettleTop2',
+      { diameterBottom: 0.08, diameterTop: 0.04, height: 0.02 },
+      this.scene
+    );
     kettleTop2.translate(Vector3.Up(), 0.14);
     kettleTop2.material = metalMaterial;
 
-    let kettleHandle = MeshBuilder.CreateTorus("kettleHandle", { diameter: 0.06, thickness: 0.01 }, this.scene);
+    let kettleHandle = MeshBuilder.CreateTorus(
+      'kettleHandle',
+      { diameter: 0.06, thickness: 0.01 },
+      this.scene
+    );
     kettleHandle.translate(Vector3.Up(), 0.06);
     kettleHandle.translate(Vector3.Forward(), 0.05);
     kettleHandle.rotate(Vector3.Forward(), this.toRadians(-90));
