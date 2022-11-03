@@ -9,6 +9,9 @@ import { InfoPanelComponent } from './components/info-panel/info-panel.component
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AttributePanelComponent } from './components/attribute-panel/attribute-panel.component';
 
+import { MatButtonModule } from '@angular/material/button';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,7 +23,9 @@ import { AttributePanelComponent } from './components/attribute-panel/attribute-
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatButtonModule,
+    MatButtonToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

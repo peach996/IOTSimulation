@@ -7,7 +7,8 @@
     width: 98%;
 
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
+    justify-content: space-between;
     padding: 16px;
 
     pointer-events: none;
@@ -24,5 +25,13 @@
     box-shadow: 5px 5px 5px gray;
     padding: 16px;
 
+    pointer-events: all;
+}
+
+button {
+    margin: 8px;
+}
+
+.level {
     pointer-events: all;
 }
