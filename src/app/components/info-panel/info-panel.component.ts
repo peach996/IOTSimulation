@@ -11,7 +11,10 @@ export class InfoPanelComponent implements OnInit {
   @Output() runSim = new EventEmitter<any>();
 
   @Output() levelChanged = new EventEmitter<Level>();
+  @Output("addSolarPanels") addSolarPanelsEvent = new EventEmitter<void>();
 
+
+  isSolarPanelsActive: boolean = true;
   currentLevel: Level = Level.Ground;
   level = Level;
 
@@ -35,6 +38,11 @@ export class InfoPanelComponent implements OnInit {
       this.currentLevel = Level.Ground;
 
     this.levelChanged.emit(this.currentLevel);
+  }
+
+  addSolarPanels(): void {
+    this.isSolarPanelsActive = false;
+    this.addSolarPanelsEvent.emit();
   }
 }
 

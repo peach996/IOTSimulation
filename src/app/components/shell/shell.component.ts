@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import {
   ArcRotateCamera,
   AxesViewer,
@@ -633,6 +633,11 @@ export class ShellComponent implements OnInit {
     this.roofPlanes.forEach((mesh: Mesh) => {
       mesh.visibility = level;
     });
+  }
+
+  addSolarPanels(): void {
+    this.levelChanged(Level.Roof);
+    this.createSolarPanels();
   }
 
   simulateMovement() {
@@ -1298,6 +1303,60 @@ export class ShellComponent implements OnInit {
     roofPlane2.visibility = 0;
 
     return [roofPlane, roofPlane2];
+  }
+
+  private createSolarPanels(): void {
+    const shape: Vector3[] = [
+      new Vector3(-1.0, 0, 0),
+      new Vector3(3.0, 0, 0),
+      new Vector3(3.0, 0, 1.8),
+      new Vector3(-1.0, 0, 1.8),
+    ];
+
+    let ambientOcclusionSolarPanel = new Texture(
+      'assets/materials/solar_panels/ambientOcclusion.jpg'
+    );
+    ambientOcclusionSolarPanel.uScale = this.roofTextureScale;
+    ambientOcclusionSolarPanel.vScale = this.roofTextureScale;
+    let baseColorSolarPanel = new Texture(
+      'assets/materials/solar_panels/baseColor.jpg'
+    );
+    baseColorSolarPanel.uScale = this.roofTextureScale;
+    baseColorSolarPanel.vScale = this.roofTextureScale;
+    let normalSolarPanel = new Texture('assets/materials/solar_panels/normal.jpg');
+    normalSolarPanel.uScale = this.roofTextureScale;
+    normalSolarPanel.vScale = this.roofTextureScale;
+    let roughnessSolarPanel = new Texture(
+      'assets/materials/solar_panels/roughness.jpg'
+    );
+    roughnessSolarPanel.uScale = this.roofTextureScale;
+    roughnessSolarPanel.vScale = this.roofTextureScale;
+
+    let solarPanelMaterial = new PBRMaterial('roofMaterial', this.scene);
+    solarPanelMaterial.ambientTexture = ambientOcclusionSolarPanel;
+    solarPanelMaterial.albedoTexture = baseColorSolarPanel;
+    solarPanelMaterial.bumpTexture = normalSolarPanel;
+    solarPanelMaterial.metallicTexture = roughnessSolarPanel;
+
+    let solarPanel = MeshBuilder.ExtrudePolygon("Solar panel", { shape: shape, depth: 0.05, updatable: true }, this.scene, earcut);
+    solarPanel.material = solarPanelMaterial;
+    let solarPanel2 = solarPanel.clone();
+
+    solarPanel.translate(Vector3.Forward(), 0.5);
+    solarPanel.translate(Vector3.Right(), 0.5);
+    solarPanel.translate(Vector3.Up(), 1.85);
+    solarPanel.rotate(Vector3.Right(), this.toRadians(20));
+    
+    solarPanel2.translate(Vector3.Backward(), 0.5);
+    solarPanel2.translate(Vector3.Left(), 0.5);
+    solarPanel2.translate(Vector3.Right(), 3);
+    solarPanel2.translate(Vector3.Up(), 1.85);
+    solarPanel2.rotate(Vector3.Up(), this.toRadians(180));
+    solarPanel2.rotate(Vector3.Right(), this.toRadians(20));
+    solarPanel2.setParent(solarPanel);
+
+    this.roofPlanes = this.roofPlanes.concat(solarPanel);
+    this.roofPlanes = this.roofPlanes.concat(solarPanel2);
   }
 
   private toRadians(degrees: number): number {
