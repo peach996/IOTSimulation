@@ -21,9 +21,7 @@ export class ShellComponent implements OnInit {
 
   ngOnInit(): void {
     this.init();
-
-    MeshBuilder.CreateBox("box", { size: 10 }, this.scene);
-
+    this.buildHouse();
     this.render();    
   }
 
@@ -41,6 +39,10 @@ export class ShellComponent implements OnInit {
 
     // Lighting
     this.light = new HemisphericLight("hemisphericLight", new Vector3(0, 1, 0), this.scene);
+  }
+
+  private buildHouse(): void {
+    MeshBuilder.CreateBox("box", { size: 10 }, this.scene);
   }
 
   private render(): void {
