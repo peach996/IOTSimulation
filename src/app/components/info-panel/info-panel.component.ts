@@ -41,6 +41,7 @@ export class InfoPanelComponent implements OnInit {
   }
 
   addSolarPanels(): void {
+    this.points += 800;
     this.isSolarPanelsActive = false;
     this.addSolarPanelsEvent.emit();
   }
