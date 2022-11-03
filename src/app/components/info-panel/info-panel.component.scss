@@ -1,4 +1,28 @@
 .container {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 92%;
+    width: 98%;
+
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 16px;
+
+    pointer-events: none;
+}
+
+.panel {
     display: block;
-    
+    height: 100%;
+    width: 20%;
+
+    background-color: lightgray;
+    border: 1px solid grey;
+    border-radius: 25px;
+    box-shadow: 5px 5px 5px gray;
+    padding: 16px;
+
+    pointer-events: all;
 }
