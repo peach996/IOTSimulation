@@ -7,13 +7,15 @@ import { ShellComponent } from './components/shell/shell.component';
 import { BabylonViewerComponent } from './components/babylon-viewer/babylon-viewer.component';
 import { InfoPanelComponent } from './components/info-panel/info-panel.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AttributePanelComponent } from './components/attribute-panel/attribute-panel.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ShellComponent,
     BabylonViewerComponent,
-    InfoPanelComponent
+    InfoPanelComponent,
+    AttributePanelComponent
   ],
   imports: [
     BrowserModule,
