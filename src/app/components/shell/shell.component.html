@@ -1,4 +1,4 @@
 <div class="container">
   <canvas #viewerCanvas touch-action="none"></canvas>
-  <app-info-panel (runSim)="runSim()" class="info-panel"></app-info-panel>
+  <app-info-panel (runSim)="runSim()" (levelChanged)="levelChanged($event)" class="info-panel"></app-info-panel>
 </div>

@@ -11,11 +11,11 @@ import {
   PBRMaterial,
   PointerEventTypes,
   Scene,
-  SceneLoader,
-  StandardMaterial,
   Texture,
   Vector3,
 } from '@babylonjs/core';
+import * as earcut from 'earcut';
+import { Level } from '../info-panel/info-panel.component';
 
 @Component({
   selector: 'app-shell',
@@ -34,6 +34,7 @@ export class ShellComponent implements OnInit {
   private innerWallMaterial?: PBRMaterial;
 
   private readonly kitchenTextureScale: number = 4;
+  private readonly roofTextureScale: number = 2;
   private readonly carpetTextureScale: number = 10;
   private readonly innerWallTextureScale: number = 10;
   private readonly brickTextureScaleU: number = 10;
@@ -556,6 +557,7 @@ export class ShellComponent implements OnInit {
   ];
 
   i = 0;
+  private roofPlanes: Mesh[] = [];
 
   constructor() {}
 
@@ -615,6 +617,12 @@ export class ShellComponent implements OnInit {
 
   runSim() {
     setInterval(() => this.simulateMovement(), 100);
+  }
+
+  levelChanged(level: Level): void {
+    this.roofPlanes.forEach((mesh: Mesh) => {
+      mesh.visibility = level;
+    });
   }
 
   simulateMovement() {
@@ -687,6 +695,9 @@ export class ShellComponent implements OnInit {
     this.buildLivingRoom();
     this.buildKitchen();
     this.buildBackRoom();
+
+    // Roof
+    this.roofPlanes = this.createRoofPlanes();
   }
 
   private buildLivingRoom(): void {
@@ -1166,6 +1177,52 @@ export class ShellComponent implements OnInit {
     kettleHandle.setParent(base);
 
     return base;
+  }
+
+  private createRoofPlanes(): Mesh[] {
+    const shape: Vector3[] = [
+      new Vector3(-1.6, 0, 0),
+      new Vector3(4.6, 0, 0),
+      new Vector3(4.6, 0, 2.8),
+      new Vector3(-1.6, 0, 2.8),
+    ];
+
+    let baseColorRoof = new Texture(
+      'assets/materials/roofing/baseColor.jpg'
+    );
+    baseColorRoof.uScale = this.roofTextureScale;
+    baseColorRoof.vScale = this.roofTextureScale;
+    let normalRoof = new Texture('assets/materials/roofing/normal.jpg');
+    normalRoof.uScale = this.roofTextureScale;
+    normalRoof.vScale = this.roofTextureScale;
+    let roughnessRoof = new Texture(
+      'assets/materials/roofing/roughness.jpg'
+    );
+    roughnessRoof.uScale = this.roofTextureScale;
+    roughnessRoof.vScale = this.roofTextureScale;
+
+    let roofMaterial = new PBRMaterial('roofMaterial', this.scene);
+    roofMaterial.albedoTexture = baseColorRoof;
+    roofMaterial.bumpTexture = normalRoof;
+    roofMaterial.metallicTexture = roughnessRoof;
+
+    let roofPlane = MeshBuilder.ExtrudePolygon("RoofPlane", { shape: shape, depth: 0.01, updatable: true }, this.scene, earcut);
+    roofPlane.material = roofMaterial;
+    let roofPlane2 = roofPlane.clone();
+
+    roofPlane.translate(Vector3.Up(), 2);
+    roofPlane.rotate(Vector3.Right(), this.toRadians(20));
+    
+    roofPlane2.translate(Vector3.Right(), 3);
+    roofPlane2.translate(Vector3.Up(), 2);
+    roofPlane2.rotate(Vector3.Up(), this.toRadians(180));
+    roofPlane2.rotate(Vector3.Right(), this.toRadians(20));
+    roofPlane2.setParent(roofPlane);
+
+    roofPlane.visibility = 0;
+    roofPlane2.visibility = 0;
+
+    return [roofPlane, roofPlane2];
   }
 
   private toRadians(degrees: number): number {

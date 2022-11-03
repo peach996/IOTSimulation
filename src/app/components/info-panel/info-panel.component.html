@@ -1,8 +1,8 @@
 <div class="container">
   <div class="level">
-    <mat-button-toggle-group name="level" aria-label="View level">
-      <mat-button-toggle value="roof">Roof</mat-button-toggle>
-      <mat-button-toggle value="ground">Ground floor</mat-button-toggle>
+    <mat-button-toggle-group name="level" aria-label="View level" (change)="levelChange($event)">
+      <mat-button-toggle value="roof" [checked]="level.Roof === currentLevel">Roof</mat-button-toggle>
+      <mat-button-toggle value="ground" [checked]="level.Ground=== currentLevel">Ground floor</mat-button-toggle>
     </mat-button-toggle-group>
   </div>
   <div class="panel">
