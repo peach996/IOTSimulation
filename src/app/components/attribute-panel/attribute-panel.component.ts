@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-attribute-panel',
@@ -6,6 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./attribute-panel.component.scss']
 })
 export class AttributePanelComponent implements OnInit {
+
+  @Input()
+  energyEfficiency: number = 0;
 
   constructor() { }
 

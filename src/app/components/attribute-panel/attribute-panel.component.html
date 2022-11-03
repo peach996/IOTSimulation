@@ -8,7 +8,7 @@
   Heat Efficiency<progress id="file" value="60" max="100">60</progress>
 </div>
 <div class="attribute">
-  Energy Efficiency<progress id="file" value="50" max="100">50</progress>
+  Energy Efficiency<progress id="file" [value]="energyEfficiency" max="100">{{ energyEfficiency }}</progress>
 </div>
 <div class="attribute">
   Maintenance<progress id="file" value="32" max="100">32</progress>

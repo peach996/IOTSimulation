@@ -10,7 +10,7 @@
     <div class="level">Points : {{ points }}</div>
     <br />
     <br />
-    <app-attribute-panel></app-attribute-panel>
+    <app-attribute-panel [energyEfficiency]="energyEfficiency"></app-attribute-panel>
     <div><button mat-raised-button color="primary" (click)="visualiseData($event)">Visualise Data</button></div>
     <div><button mat-raised-button color="primary" (click)="shareData($event)">Share Data</button></div>
     <div><button mat-raised-button color="primary" (click)="addSolarPanels()" [disabled]="!isSolarPanelsActive">Solar Upgrade: Cost $1500 ROI - $100 per year</button></div>

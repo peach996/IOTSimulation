@@ -17,6 +17,7 @@ export class InfoPanelComponent implements OnInit {
   isSolarPanelsActive: boolean = true;
   currentLevel: Level = Level.Ground;
   level = Level;
+  energyEfficiency: number = 25;
 
   constructor() {}
 
@@ -42,6 +43,7 @@ export class InfoPanelComponent implements OnInit {
 
   addSolarPanels(): void {
     this.points += 800;
+    this.energyEfficiency = 66;
     this.isSolarPanelsActive = false;
     this.addSolarPanelsEvent.emit();
   }
