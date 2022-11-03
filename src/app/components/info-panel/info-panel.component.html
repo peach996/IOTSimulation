@@ -1,16 +1,22 @@
 <div class="container">
+  <div class="level">
+    <mat-button-toggle-group name="level" aria-label="View level">
+      <mat-button-toggle value="roof">Roof</mat-button-toggle>
+      <mat-button-toggle value="ground">Ground floor</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
   <div class="panel">
     <h1>Info panel</h1>
     <div class="level">Points : {{ points }}</div>
     <br />
     <br />
     <app-attribute-panel></app-attribute-panel>
-    <div><button (click)="visualiseData($event)">Visualise Data</button></div>
-    <div><button (click)="shareData($event)">Share Data</button></div>
-    <div><button>Solar Upgrade: Cost $1500 ROI - $100 per year</button></div>
-    <div><button>Hydro Upgrade: Cost $1000 ROI - $30 per year</button></div>
-    <div><button>Kinetic Upgrade: Cost $500 ROI - $50 per year</button></div>
-    <div><button>Energy Upgrade: Cost $300 ROI - $350 per year</button></div>
-    <div><button>Data Upgrade: Cost $100 ROI - $150 per year</button></div>
+    <div><button mat-raised-button color="primary" (click)="visualiseData($event)">Visualise Data</button></div>
+    <div><button mat-raised-button color="primary" (click)="shareData($event)">Share Data</button></div>
+    <div><button mat-raised-button color="primary">Solar Upgrade: Cost $1500 ROI - $100 per year</button></div>
+    <div><button mat-raised-button color="primary">Hydro Upgrade: Cost $1000 ROI - $30 per year</button></div>
+    <div><button mat-raised-button color="primary">Kinetic Upgrade: Cost $500 ROI - $50 per year</button></div>
+    <div><button mat-raised-button color="primary">Energy Upgrade: Cost $300 ROI - $350 per year</button></div>
+    <div><button mat-raised-button color="primary">Data Upgrade: Cost $100 ROI - $150 per year</button></div>
   </div>
 </div>
