@@ -681,20 +681,20 @@ export class ShellComponent implements OnInit {
 
   private buildHouse(): void {
     // Outer walls
-    let wall1 = this.buildWall(6);
+    let wall1 = this.buildWall(6, undefined, true);
     wall1.translate(Vector3.Backward(), 2.5);
     wall1.translate(Vector3.Right(), 1.5);
 
-    let wall2 = this.buildWall(6);
+    let wall2 = this.buildWall(6, undefined, true);
     wall2.translate(Vector3.Forward(), 2.5);
     wall2.translate(Vector3.Right(), 1.5);
     wall2.rotate(Vector3.Up(), this.toRadians(180));
 
-    let wall3 = this.buildWall(5);
+    let wall3 = this.buildWall(5, undefined, true);
     wall3.translate(Vector3.Left(), 1.5);
     wall3.rotate(Vector3.Up(), this.toRadians(90));
 
-    let wall4 = this.buildWall(5);
+    let wall4 = this.buildWall(5, undefined, true);
     wall4.translate(Vector3.Right(), 4.5);
     wall4.rotate(Vector3.Up(), this.toRadians(-90));
 
@@ -821,37 +821,46 @@ export class ShellComponent implements OnInit {
     floor.material = floorMaterial;
   }
 
-  private buildWall(length: number, outerMaterial?: PBRMaterial): Mesh {
+  private buildWall(length: number, outerMaterial?: PBRMaterial, isOuterWall?: boolean): Mesh {
     const height: number = 1.05;
 
-    let innerWall = MeshBuilder.CreatePlane(
-      'innerWall',
-      { height: height, width: length, sideOrientation: Mesh.DOUBLESIDE },
-      this.scene
-    );
-    innerWall.translate(Vector3.Up(), height / 2);
+    let modifier = 0;
+
+    if (isOuterWall)
+      modifier = 0.05;
+
+    const innerWallShape: Vector3[] = [
+      new Vector3(-(length / 2), 0, 0),
+      new Vector3(length / 2 , 0, 0),
+    ];
+
+    let innerWall = MeshBuilder.CreatePolygon("innerWall", {shape: innerWallShape, depth: height}, this.scene, earcut);
+    innerWall.translate(Vector3.Up(), height);
 
     innerWall.material = this.getInnerWallMaterial();
 
-    let outerWall = MeshBuilder.CreatePlane(
-      'outerWall',
-      { height: height, width: length, sideOrientation: Mesh.DOUBLESIDE },
-      this.scene
-    );
+    const outerWallShape: Vector3[] = [
+      new Vector3(-(length / 2) - modifier, 0, 0),
+      new Vector3(length / 2 + modifier , 0, 0),
+    ];
+
+    let outerWall = MeshBuilder.CreatePolygon("outerWall", {shape: outerWallShape, depth: height}, this.scene, earcut);
     outerWall.translate(Vector3.Backward(), 0.05);
-    outerWall.translate(Vector3.Up(), height / 2);
+    outerWall.translate(Vector3.Up(), height);
     outerWall.setParent(innerWall);
 
     if (!outerMaterial) outerWall.material = this.getOuterWallMaterial();
 
-    let topPlate = MeshBuilder.CreatePlane(
-      'topPlate',
-      { height: 0.05, width: length, sideOrientation: Mesh.DOUBLESIDE },
-      this.scene
-    );
+    const topPlateShape: Vector3[] = [
+      new Vector3(-(length / 2) - modifier, 0, 0),
+      new Vector3(length / 2 + modifier , 0, 0),
+      new Vector3(length / 2 , 0, 0.05),
+      new Vector3(-(length / 2), 0, 0.05),
+    ];
+    
+    let topPlate = MeshBuilder.CreatePolygon("outerWall", {shape: topPlateShape, depth: 0.01}, this.scene, earcut);
     topPlate.translate(Vector3.Up(), height);
-    topPlate.translate(Vector3.Backward(), 0.025);
-    topPlate.rotate(Vector3.Left(), this.toRadians(-90));
+    topPlate.translate(Vector3.Backward(), 0.05);
     topPlate.setParent(innerWall);
     topPlate.material = this.getTopPlateMaterial();
 
