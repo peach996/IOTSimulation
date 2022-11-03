@@ -46,7 +46,7 @@ export class ShellComponent implements OnInit {
     this.camera = new ArcRotateCamera("MainCamera",  Math.PI / 2, Math.PI / 2, 10, Vector3.Zero(), this.scene);
     this.camera.attachControl(this.canvas, true);
     this.camera.target = new Vector3(1.5, 0, 0);
-    this.camera.lowerRadiusLimit = 2;
+    this.camera.lowerRadiusLimit = 0.1;
     this.camera.upperRadiusLimit = 20;
 
     // Lighting
@@ -276,11 +276,40 @@ export class ShellComponent implements OnInit {
     plugSocket2.translate(Vector3.Backward(), 1);
     plugSocket2.rotate(Vector3.Up(), this.toRadians(-90));
 
+    let plugSocket3 = this.createPlugSocket();
+    plugSocket3.translate(Vector3.Up(), 0.2);
+    plugSocket3.translate(Vector3.Right(), 4.5);
+    plugSocket3.translate(Vector3.Backward(), 2);
+    plugSocket3.rotate(Vector3.Up(), this.toRadians(-90));
+
+    let plugSocket4 = this.createPlugSocket();
+    plugSocket4.translate(Vector3.Up(), 0.5);
+    plugSocket4.translate(Vector3.Right(), 4.5);
+    plugSocket4.translate(Vector3.Forward(), 2.25);
+    plugSocket4.rotate(Vector3.Up(), this.toRadians(-90));
+
     // Kitchen
     let kitchenCabinets = this.createKitchenCabinets();
     kitchenCabinets.translate(Vector3.Up(), 0.175);
     kitchenCabinets.translate(Vector3.Backward(), 0.25);
     kitchenCabinets.translate(Vector3.Right(), 3.5);
+
+    // Kettle
+    let kettle = this.createKettle();
+    kettle.translate(Vector3.Up(), 0.37);
+    kettle.translate(Vector3.Right(), 4.3);
+    kettle.translate(Vector3.Forward(), 2.2);
+
+    // Lamps
+    let lamp1 = this.createLamp();
+    lamp1.translate(Vector3.Up(), 0.025);
+    lamp1.translate(Vector3.Left(), 1.25);
+    lamp1.translate(Vector3.Backward(), 1.25);
+
+    let lamp2 = this.createLamp();
+    lamp2.translate(Vector3.Up(), 0.025);
+    lamp2.translate(Vector3.Right(), 4.25);
+    lamp2.translate(Vector3.Backward(), 2.25);
   }
 
   private createTv(): Mesh {
@@ -384,6 +413,68 @@ export class ShellComponent implements OnInit {
     sink.setParent(kitchenCabinet); 
 
     return kitchenCabinet;
+  }
+
+  private createLamp(): Mesh {
+    let metalMaterial = new PBRMaterial("metalMaterial", this.scene);
+    metalMaterial.albedoColor = new Color3(0.8, 0.8, 0.8);
+    metalMaterial.roughness = 0.2;
+    metalMaterial.metallic = 0.8;
+
+    let base = MeshBuilder.CreateCylinder("base", { diameterBottom: 0.2, diameterTop: 0.02, height: 0.05}, this.scene);
+    base.material = metalMaterial;
+
+    let pole = MeshBuilder.CreateCylinder("pole", { diameterBottom: 0.02, diameterTop: 0.02, height: 0.5}, this.scene);
+    pole.translate(Vector3.Up(), 0.25);
+    pole.material = metalMaterial;
+
+    let lampShade = MeshBuilder.CreateCylinder("lampShade", { diameterBottom: 0.2, diameterTop: 0.1, height: 0.1}, this.scene);
+    lampShade.translate(Vector3.Up(), 0.5);
+    let lampShadeMaterial = new PBRMaterial("metalMaterial", this.scene);
+    lampShadeMaterial.albedoColor = new Color3(0.8, 0.8, 0.8);
+    lampShadeMaterial.roughness = 1.0;
+    lampShadeMaterial.metallic = 0.0;
+    lampShade.material = lampShadeMaterial;
+
+    pole.setParent(base);
+    lampShade.setParent(base);
+
+    return base;
+  }
+
+  private createKettle(): Mesh {
+    let metalMaterial = new PBRMaterial("metalMaterial", this.scene);
+    metalMaterial.albedoColor = new Color3(0.0, 0.0, 0.0);
+    metalMaterial.roughness = 0.2;
+    metalMaterial.metallic = 0.8;
+
+    let base = MeshBuilder.CreateCylinder("base", { diameterBottom: 0.1, diameterTop: 0.1, height: 0.01}, this.scene);
+    base.material = metalMaterial;
+
+    let kettleBottom = MeshBuilder.CreateCylinder("kettleBottom", { diameterBottom: 0.1, diameterTop: 0.1, height: 0.1}, this.scene);
+    kettleBottom.translate(Vector3.Up(), 0.06);
+    kettleBottom.material = metalMaterial;
+
+    let kettleTop1 = MeshBuilder.CreateCylinder("kettleTop1", { diameterBottom: 0.1, diameterTop: 0.08, height: 0.02}, this.scene);
+    kettleTop1.translate(Vector3.Up(), 0.12);
+    kettleTop1.material = metalMaterial;
+
+    let kettleTop2 = MeshBuilder.CreateCylinder("kettleTop2", { diameterBottom: 0.08, diameterTop: 0.04, height: 0.02}, this.scene);
+    kettleTop2.translate(Vector3.Up(), 0.14);
+    kettleTop2.material = metalMaterial;
+
+    let kettleHandle = MeshBuilder.CreateTorus("kettleHandle", { diameter: 0.06, thickness: 0.01 }, this.scene);
+    kettleHandle.translate(Vector3.Up(), 0.06);
+    kettleHandle.translate(Vector3.Forward(), 0.05);
+    kettleHandle.rotate(Vector3.Forward(), this.toRadians(-90));
+    kettleHandle.material = metalMaterial;
+
+    kettleBottom.setParent(base);
+    kettleTop1.setParent(base);
+    kettleTop2.setParent(base);
+    kettleHandle.setParent(base);
+
+    return base;
   }
 
   private toRadians(degrees: number): number {
