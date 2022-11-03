@@ -5,12 +5,14 @@ import {
   Color3,
   Color4,
   CSG,
+  DirectionalLight,
   Engine,
   HemisphericLight,
   Mesh,
   MeshBuilder,
   PBRMaterial,
   PointerEventTypes,
+  PointLight,
   Scene,
   Texture,
   Vector3,
@@ -607,6 +609,7 @@ export class ShellComponent implements OnInit {
       new Vector3(0, 1, 0),
       this.scene
     );
+    this.light.intensity = 0.5;
 
     // Helpers
     const axes = new AxesViewer(this.scene, 1);
@@ -743,6 +746,18 @@ export class ShellComponent implements OnInit {
 
     // Roof
     this.roofPlanes = this.createRoofPlanes();
+
+    // Lighting
+    let light1 = new PointLight("pointlight1", new Vector3(0, 1, 0), this.scene);
+    light1.intensity = 2;
+
+    let light2 = new PointLight("pointlight2", new Vector3(3, 1, 1.25), this.scene);
+    light2.intensity = 2;
+
+    let light3 = new PointLight("pointlight3", new Vector3(3, 1, -1.5), this.scene);
+    light3.intensity = 2;
+    
+    let directionalLight = new DirectionalLight("directionLight", new Vector3(-0.25, -0.25, -0.25), this.scene);
   }
 
   private buildLivingRoom(): void {
